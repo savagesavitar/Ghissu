@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Semesters</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="container my-5">
+  <h1>Semesters</h1>
+  <ul class="list-group">
+    <% semesters.forEach(sem => { %>
+      <li class="list-group-item">
+        <a href="/semesters/<%= sem.id %>/course-types">Semester <%= sem.semester_num %></a>
+      </li>
+    <% }) %>
+  </ul>
+  <a href="/courses" class="btn btn-link mt-3">Back to Courses</a>
+</body>
+</html>
+
