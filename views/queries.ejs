@@ -2,16 +2,163 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Study Materials - Ghissu</title>
+  <title>Queries - Ghissu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .query-card {
+        border-left: 4px solid var(--primary-color);
+        transition: transform 0.2s;
+    }
+    .query-card:hover {
+        transform: translateX(5px);
+    }
+    .status-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+    }
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-resolved { background: #d4edda; color: #155724; }
+  </style>
 </head>
-<body>
-  <div class="container my-5">
-   <h1>Page Title</h1>
-<p>Content description or form goes here.</p>
-<a href="/" class="btn btn-link mt-3">Back to Home</a>
+<body class="bg-light">
 
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a href="/" class="navbar-brand"><i class="fas fa-graduation-cap me-2"></i>Ghissu</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto">
+            <!-- Reusing the courses dropdown logic passed from controller -->
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Browse Courses</a>
+                <ul class="dropdown-menu shadow border-0">
+                  <% courses.forEach(course => { %>
+                    <li class="dropdown-submenu position-relative">
+                      <a class="dropdown-item dropdown-toggle" href="#"><%= course.name %></a>
+                      <ul class="dropdown-menu shadow border-0 position-absolute top-0 start-100">
+                        <% course.semesters.forEach(semester => { %>
+                          <li class="dropdown-submenu position-relative">
+                            <a class="dropdown-item dropdown-toggle" href="#">Semester <%= semester.semester_num %></a>
+                            <ul class="dropdown-menu shadow border-0 position-absolute top-0 start-100">
+                              <% semester.types.forEach(type => { %>
+                                <li><a class="dropdown-item" href="/materials/semester/<%= semester.id %>/type/<%= type.id %>"><%= type.name %></a></li>
+                              <% }) %>
+                            </ul>
+                          </li>
+                        <% }) %>
+                      </ul>
+                    </li>
+                  <% }) %>
+                </ul>
+            </li>
+        </ul>
+        <div class="d-flex gap-2">
+            <a href="/" class="btn btn-outline-secondary btn-sm rounded-pill px-3">Home</a>
+            <a href="/upload" class="btn btn-primary btn-sm rounded-pill px-3">Upload</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-5">
+    <div class="row g-5">
+      
+      <!-- LEFT COLUMN: Ask a Question Form -->
+      <div class="col-lg-5">
+        <div class="custom-card p-4 sticky-top" style="top: 100px; z-index: 1;">
+            <div class="d-flex align-items-center mb-4 text-primary">
+                <i class="fas fa-question-circle fa-2x me-3"></i>
+                <h3 class="fw-bold mb-0">Ask the Community</h3>
+            </div>
+            
+            <% if (locals.successMessage) { %>
+                <div class="alert alert-success shadow-sm border-0 small mb-4">
+                    <i class="fas fa-check-circle me-2"></i> <%= successMessage %>
+                </div>
+            <% } %>
+
+            <form action="/queries" method="POST">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Your Name</label>
+                    <input type="text" class="form-control" name="student_name" placeholder="e.g. Rahul Verma" required>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label small fw-bold text-muted">Branch</label>
+                        <input type="text" class="form-control" name="branch" placeholder="GPT" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-bold text-muted">Year</label>
+                        <select class="form-select" name="year">
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted">Your Question</label>
+                    <textarea class="form-control" name="question" rows="4" placeholder="e.g. Does anyone have the solutions for the Seismology assignment?" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 shadow-sm">
+                    Submit Query <i class="fas fa-paper-plane ms-2"></i>
+                </button>
+            </form>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Recent Queries List -->
+      <div class="col-lg-7">
+        <h4 class="fw-bold mb-4 text-dark">Recent Discussions</h4>
+        
+        <% if (queries.length === 0) { %>
+            <div class="text-center py-5 text-muted">
+                <i class="far fa-comment-dots fa-3x mb-3 opacity-50"></i>
+                <p>No queries yet. Be the first to ask!</p>
+            </div>
+        <% } else { %>
+            <div class="d-flex flex-column gap-3">
+                <% queries.forEach(query => { %>
+                    <div class="custom-card query-card p-4 bg-white">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold" style="width: 35px; height: 35px;">
+                                    <%= query.student_name.charAt(0).toUpperCase() %>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark"><%= query.student_name %></h6>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        <%= query.branch %> • <%= query.year %> • <%= new Date(query.created_at).toLocaleDateString() %>
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="status-badge <%= query.status === 'Resolved' ? 'status-resolved' : 'status-pending' %>">
+                                <%= query.status %>
+                            </span>
+                        </div>
+                        <p class="text-secondary mb-0" style="line-height: 1.6;">
+                            <%= query.question %>
+                        </p>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+      </div>
+
+    </div>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+      /* Dropdown hover fix */
+      @media (min-width: 992px) {
+        .dropdown-submenu:hover > .dropdown-menu { display: block; }
+        .dropdown-menu { margin-top: 0; }
+      }
+  </style>
 </body>
 </html>

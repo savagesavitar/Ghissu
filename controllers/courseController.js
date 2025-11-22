@@ -1,93 +1,251 @@
 // controllers/courseController.js
 const db = require('../db'); // This connects to your db.js file
-
+const fs = require('fs');
+const path = require('path');
 // The function to get the homepage (with debug checkpoints)
 // controllers/courseController.js
 
-// controllers/courseController.js
 
-// controllers/courseController.js
 
-// controllers/courseController.js
-
+// 1. HOMEPAGE: Fetch Courses + Read Meme Folder
 exports.getHomePage = async (req, res) => {
   try {
+    // --- PART A: Database Queries (Courses) ---
     const [courseTypes] = await db.query('SELECT * FROM course_types');
-
+    
     const sqlQuery = `
-      SELECT
+      SELECT 
         c.id AS course_id, c.name AS course_name,
-        s.id AS semester_id, s.semester_num,
-        cn.id AS course_name_id, cn.name AS subject_name, cn.course_type_id
+        s.id AS semester_id, s.semester_num
       FROM courses c
       LEFT JOIN semesters s ON c.id = s.course_id
-      LEFT JOIN course_names cn ON s.id = cn.semester_id
-      ORDER BY c.id, s.semester_num, cn.id;
+      ORDER BY c.id, s.semester_num;
     `;
     const [rows] = await db.query(sqlQuery);
 
     const coursesMap = new Map();
     rows.forEach(row => {
-      if (row.course_id && !coursesMap.has(row.course_id)) {
-        coursesMap.set(row.course_id, {
-          id: row.course_id,
-          name: row.course_name,
-          semesters: new Map()
-        });
+      if (!row.course_id) return;
+      if (!coursesMap.has(row.course_id)) {
+        coursesMap.set(row.course_id, { id: row.course_id, name: row.course_name, semesters: [] });
       }
       const course = coursesMap.get(row.course_id);
-
-      if (course && row.semester_id && !course.semesters.has(row.semester_id)) {
-        const semesterCourseTypes = JSON.parse(JSON.stringify(courseTypes)).map(ct => ({ ...ct, courseNames: [] }));
-        course.semesters.set(row.semester_id, {
+      if (row.semester_id && !course.semesters.find(s => s.id === row.semester_id)) {
+        course.semesters.push({
           id: row.semester_id,
           semester_num: row.semester_num,
-          courseTypes: semesterCourseTypes
+          types: courseTypes 
         });
       }
-      const semester = course?.semesters.get(row.semester_id);
-      
-      if (semester && row.course_name_id) {
-        const targetCourseType = semester.courseTypes.find(ct => ct.id === row.course_type_id);
-        if (targetCourseType) {
-          targetCourseType.courseNames.push({
-            id: row.course_name_id,
-            name: row.subject_name
-          });
-        }
+    });
+    const courses = Array.from(coursesMap.values());
+
+    // --- PART B: Read Meme Files from Folder ---
+    const memeDir = path.join(__dirname, '../public/images/memes');
+    let memeFiles = [];
+    
+    try {
+      if (fs.existsSync(memeDir)) {
+        // Read directory and filter for images only (jpg, png, jpeg, gif, webp)
+        memeFiles = fs.readdirSync(memeDir).filter(file => {
+          return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
+        });
       }
-    });
+    } catch (err) {
+      console.error("Error reading meme folder:", err);
+    }
 
-    // Convert the final Map into an Array for the EJS template
-    const courses = Array.from(coursesMap.values()).map(course => {
-      course.semesters = Array.from(course.semesters.values());
-      
-      // THE PROBLEMATIC FILTERING LOGIC HAS BEEN REMOVED FROM THIS SECTION
-      
-      return course;
+    // --- PART C: Render Page ---
+    res.render('index', { 
+      courses, 
+      activePage: 'home',
+      memeFiles: memeFiles // <--- Sending the list of files to EJS
     });
-
-    res.render('index', { courses, activePage: 'home' });
 
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
   }
 };
-// Add the other functions needed by your routes
-exports.getUploadPage = (req, res) => {
-  res.render('upload');
+// controllers/courseController.js
+
+// ... (Keep getHomePage as it is) ...
+
+// 2. UPLOAD PAGE: Checks for success flag and sends data
+exports.getUploadPage = async (req, res) => {
+  try {
+    // Check if we just finished a successful upload
+    const successMessage = req.query.status === 'success' ? 'Material link added successfully!' : null;
+
+    const [courseTypes] = await db.query('SELECT * FROM course_types');
+    
+    const sqlQuery = `
+      SELECT c.id AS course_id, c.name AS course_name, s.id AS semester_id, s.semester_num
+      FROM courses c
+      LEFT JOIN semesters s ON c.id = s.course_id
+      ORDER BY c.id, s.semester_num;
+    `;
+    const [rows] = await db.query(sqlQuery);
+
+    const coursesMap = new Map();
+    rows.forEach(row => {
+      if (!row.course_id) return;
+      if (!coursesMap.has(row.course_id)) {
+        coursesMap.set(row.course_id, { id: row.course_id, name: row.course_name, semesters: [] });
+      }
+      const course = coursesMap.get(row.course_id);
+      if (row.semester_id && !course.semesters.find(s => s.id === row.semester_id)) {
+        course.semesters.push({
+          id: row.semester_id,
+          semester_num: row.semester_num
+        });
+      }
+    });
+
+    res.render('upload', { 
+      activePage: 'upload',
+      coursesData: JSON.stringify(Array.from(coursesMap.values())),
+      typesData: JSON.stringify(courseTypes),
+      successMessage: successMessage // <--- Pass the message to the view
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
 };
 
+// 3. HANDLE UPLOAD: Redirects back to upload page with success flag
 exports.handleUpload = async (req, res) => {
-  const { title } = req.body;
-  const filename = req.file.filename;
-  // This is simplified. You'll need to get the course_name_id from the form.
-  const course_name_id = 1; // Placeholder
-  await db.query('INSERT INTO materials (title, filename, course_name_id) VALUES (?, ?, ?)', [title, filename, course_name_id]);
-  res.send('File uploaded!');
+  try {
+    const { title, semester_id, course_type_id, author_name, author_branch, author_year, drive_link } = req.body;
+
+    if (!title || !semester_id || !course_type_id || !drive_link) {
+      return res.status(400).send('Missing required fields.');
+    }
+
+    const query = `
+      INSERT INTO materials 
+      (title, semester_id, course_type_id, author_name, author_branch, author_year, drive_link) 
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    
+    await db.query(query, [title, semester_id, course_type_id, author_name, author_branch, author_year, drive_link]);
+
+    // Redirect back to the SAME page with a status flag
+    res.redirect('/upload?status=success'); 
+  // In controllers/courseController.js inside handleUpload:
+
+  } catch (err) {
+    // --- LOGGING CODE ---
+    console.log("========================================");
+    console.log("❌ UPLOAD ERROR:");
+    console.log(err.sqlMessage || err.message); 
+    console.log("========================================");
+    // --------------------
+    
+    console.error(err);
+    res.status(500).send('Server Error: ' + (err.sqlMessage || err.message)); 
+  }
 };
 
+// ... (Keep getMaterialsByCategory and others as they are) ...
+// 4. VIEW MATERIALS: Fetch by Semester + Type (THIS WAS MISSING)
+exports.getMaterialsByCategory = async (req, res) => {
+  try {
+    const { semesterId, typeId } = req.params;
+    const [materials] = await db.query(
+      'SELECT * FROM materials WHERE semester_id = ? AND course_type_id = ?', 
+      [semesterId, typeId]
+    );
+    res.render('materials', { materials });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
+
+// 5. Feedback & Queries (Placeholders to prevent crashes)
+exports.getFeedbackPage = (req, res) => { res.render('feedback', { activePage: 'feedback' }); };
+// ... existing functions ...
+
+// 7. RENDER QUERIES PAGE (Fetch existing queries to display)
+exports.getQueriesPage = async (req, res) => {
+  try {
+    // Fetch all queries, newest first
+    const [queries] = await db.query('SELECT * FROM queries ORDER BY created_at DESC');
+    
+    // Check for a success message in the URL (e.g., ?status=success)
+    const successMessage = req.query.status === 'success' ? 'Your query has been submitted successfully!' : null;
+
+    // We also need to fetch courses for the navbar dropdown to work
+    // (You can copy this block from getHomePage if you want navbar to be dynamic everywhere)
+    const [courseTypes] = await db.query('SELECT * FROM course_types');
+    const sqlQuery = `
+      SELECT c.id AS course_id, c.name AS course_name, s.id AS semester_id, s.semester_num
+      FROM courses c LEFT JOIN semesters s ON c.id = s.course_id ORDER BY c.id, s.semester_num;
+    `;
+    const [rows] = await db.query(sqlQuery);
+    const coursesMap = new Map();
+    rows.forEach(row => {
+      if (!row.course_id) return;
+      if (!coursesMap.has(row.course_id)) { coursesMap.set(row.course_id, { id: row.course_id, name: row.course_name, semesters: [] }); }
+      const course = coursesMap.get(row.course_id);
+      if (row.semester_id && !course.semesters.find(s => s.id === row.semester_id)) {
+        course.semesters.push({ id: row.semester_id, semester_num: row.semester_num, types: courseTypes });
+      }
+    });
+    const courses = Array.from(coursesMap.values());
+
+    res.render('queries', { 
+      activePage: 'queries', 
+      queries: queries, 
+      successMessage: successMessage,
+      courses: courses // for navbar
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error loading queries page');
+  }
+};
+
+// 8. HANDLE QUERY SUBMISSION
+exports.handleQuerySubmission = async (req, res) => {
+  try {
+    const { student_name, branch, year, question } = req.body;
+
+    if (!student_name || !branch || !year || !question) {
+      return res.status(400).send('All fields are required.');
+    }
+
+    await db.query(
+      'INSERT INTO queries (student_name, branch, year, question) VALUES (?, ?, ?, ?)',
+      [student_name, branch, year, question]
+    );
+
+    res.redirect('/queries?status=success');
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error submitting query');
+  }
+};
+// ... (Keep getMaterialsByCategory as it is) ...
+// 4. VIEW MATERIALS: Fetch by Semester + Type
+exports.getMaterialsByCategory = async (req, res) => {
+  try {
+    const { semesterId, typeId } = req.params;
+    const [materials] = await db.query(
+      'SELECT * FROM materials WHERE semester_id = ? AND course_type_id = ?', 
+      [semesterId, typeId]
+    );
+    res.render('materials', { materials });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
 exports.getMaterialsForCourse = async (req, res) => {
   const { courseNameId } = req.params;
   const [materials] = await db.query('SELECT * FROM materials WHERE course_name_id = ?', [courseNameId]);

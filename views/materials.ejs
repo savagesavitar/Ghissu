@@ -2,22 +2,109 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Materials</title>
+  <title>Study Materials - Ghissu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="container my-5">
-  <h1>Materials</h1>
-  <% if (materials.length === 0) { %>
-    <p>No materials found.</p>
-  <% } else { %>
-    <ul class="list-group">
-      <% materials.forEach(material => { %>
-        <li class="list-group-item">
-          <a href="/materials/<%= material.filename %>" download><%= material.filename %></a>
-        </li>
-      <% }) %>
-    </ul>
-  <% } %>
-  <a href="/" class="btn btn-link mt-3">Back to Courses</a>
+<body>
+
+  <nav class="navbar navbar-light mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="/"><i class="fas fa-graduation-cap me-2"></i>Ghissu</a>
+      <div class="d-flex gap-2">
+          <a href="/" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+            <i class="fas fa-arrow-left me-1"></i> Back
+          </a>
+          <a href="/upload" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+            <i class="fas fa-plus me-1"></i> Add New
+          </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mb-5">
+    
+    <div class="custom-card p-0 overflow-hidden">
+      
+      <div class="p-4 border-bottom bg-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 text-primary fw-bold">
+            <i class="fas fa-folder-open me-2"></i>Study Materials
+        </h4>
+        <span class="badge bg-light text-dark border"><%= materials.length %> Resources</span>
+      </div>
+      
+      <div class="p-0">
+        
+        <% if (materials.length === 0) { %>
+          <div class="text-center py-5">
+            <div class="text-muted mb-3 opacity-50">
+                <i class="far fa-folder-open fa-4x"></i>
+            </div>
+            <h5 class="fw-normal text-dark">No materials found yet.</h5>
+            <p class="text-muted small mb-4">Be the first to share a resource for this subject!</p>
+            <a href="/upload" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                <i class="fas fa-plus me-2"></i>Add Material
+            </a>
+          </div>
+        <% } else { %>
+          
+          <div class="table-responsive">
+            <table class="table table-custom mb-0 align-middle">
+              <thead>
+                <tr>
+                  <th class="ps-4 py-3">Resource Title</th>
+                  <th class="py-3">Contributor</th>
+                  <th class="py-3">Details</th>
+                  <th class="text-end pe-4 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% materials.forEach(material => { %>
+                  <tr>
+                    <td class="ps-4 fw-bold text-dark">
+                      <div class="d-flex align-items-center">
+                        <div class="bg-light rounded p-2 me-3 text-primary">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <%= material.title %>
+                      </div>
+                    </td>
+                    
+                    <td class="text-muted">
+                        <%= material.author_name || 'Anonymous' %>
+                    </td>
+                    
+                    <td>
+                      <% if(material.author_branch) { %>
+                        <span class="badge bg-white text-dark border fw-normal">
+                            <%= material.author_branch %>
+                        </span>
+                      <% } %>
+                      <% if(material.author_year) { %>
+                        <span class="badge bg-white text-dark border fw-normal ms-1">
+                            <%= material.author_year %>
+                        </span>
+                      <% } %>
+                    </td>
+                    
+                    <td class="text-end pe-4">
+                      <a href="<%= material.drive_link %>" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                        Open <i class="fas fa-external-link-alt ms-1"></i>
+                      </a>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        
+        <% } %>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

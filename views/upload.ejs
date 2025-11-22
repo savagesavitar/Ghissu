@@ -2,20 +2,172 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Upload Study Material - Ghissu</title>
+  <title>Upload - Ghissu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div class="container my-5">
-    <h1>Upload Study Material</h1>
-    <form method="POST" action="/upload" enctype="multipart/form-data" class="mt-4">
-      <div class="mb-3">
-        <input type="file" name="material" accept=".pdf,.doc,.docx,.ppt,.pptx" required class="form-control" />
+
+  <nav class="navbar navbar-light mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="/"><i class="fas fa-graduation-cap me-2"></i>Ghissu</a>
+      <a href="/" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+        <i class="fas fa-arrow-left me-1"></i> Back to Home
+      </a>
+    </div>
+  </nav>
+
+  <div class="container mb-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        
+        <% if (locals.successMessage) { %>
+          <div class="alert alert-success shadow-sm rounded-3 border-0 mb-4 d-flex align-items-center" role="alert">
+            <i class="fas fa-check-circle me-2 fs-4"></i>
+            <div>
+                <strong>Success!</strong> <%= successMessage %>
+            </div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+
+        <div class="custom-card p-4 p-md-5">
+          <div class="d-flex align-items-center mb-4 text-primary">
+             <i class="fas fa-cloud-upload-alt fa-2x me-3"></i>
+             <h3 class="fw-bold mb-0">Add Resource Link</h3>
+          </div>
+          
+          <form action="/upload" method="POST">
+            
+            <h6 class="text-uppercase text-muted fw-bold small mb-3 border-bottom pb-2">1. Contributor Details</h6>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                  <label class="form-label small fw-bold">Your Name</label>
+                  <input type="text" class="form-control" name="author_name" placeholder="e.g., Bhawani Singh" required>
+              </div>
+              <div class="col-md-3">
+                  <label class="form-label small fw-bold">Branch</label>
+                  <input type="text" class="form-control" name="author_branch" placeholder="e.g., GPT" required>
+              </div>
+              <div class="col-md-3">
+                  <label class="form-label small fw-bold">Year</label>
+                  <select class="form-select" name="author_year">
+                      <option value="1st Year">1st Year</option>
+                      <option value="2nd Year">2nd Year</option>
+                      <option value="3rd Year">3rd Year</option>
+                      <option value="4th Year">4th Year</option>
+                  </select>
+              </div>
+            </div>
+
+            <h6 class="text-uppercase text-muted fw-bold small mb-3 border-bottom pb-2">2. Categorization</h6>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Course / Branch</label>
+              <select id="courseSelect" class="form-select" required>
+                  <option value="">-- Select Course --</option>
+              </select>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                  <label class="form-label small fw-bold">Semester</label>
+                  <select id="semesterSelect" class="form-select" name="semester_id" disabled required>
+                      <option value="">-- Select Semester --</option>
+                  </select>
+              </div>
+              <div class="col-md-6">
+                  <label class="form-label small fw-bold">Type</label>
+                  <select id="typeSelect" class="form-select" name="course_type_id" disabled required>
+                      <option value="">-- Select Type --</option>
+                  </select>
+              </div>
+            </div>
+
+            <h6 class="text-uppercase text-muted fw-bold small mb-3 border-bottom pb-2">3. Resource Details</h6>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Resource Title</label>
+              <input type="text" class="form-control" name="title" placeholder="e.g., Unit 1 Notes" required>
+            </div>
+            
+            <div class="mb-4">
+              <label class="form-label small fw-bold">Google Drive Link</label>
+              <div class="input-group">
+                  <span class="input-group-text bg-white text-muted border-end-0"><i class="fas fa-link"></i></span>
+                  <input type="url" class="form-control border-start-0 ps-0" name="drive_link" placeholder="https://drive.google.com/..." required>
+              </div>
+              <div class="form-text text-muted small mt-1">
+                  <i class="fas fa-info-circle me-1"></i> Please ensure link sharing is turned on ("Anyone with the link").
+              </div>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg shadow-sm rounded-3">
+                  <i class="fas fa-paper-plane me-2"></i> Submit Resource
+              </button>
+            </div>
+          </form>
+
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary">Upload</button>
-    </form>
-    <a href="/" class="btn btn-link mt-3">Back to Home</a>
+    </div>
   </div>
+
+  <script>
+    const coursesData = <%- coursesData %>; 
+    const typesData = <%- typesData %>; 
+
+    const courseSelect = document.getElementById('courseSelect');
+    const semesterSelect = document.getElementById('semesterSelect');
+    const typeSelect = document.getElementById('typeSelect');
+
+    coursesData.forEach(course => {
+        const option = document.createElement('option');
+        option.value = course.id;
+        option.textContent = course.name;
+        courseSelect.appendChild(option);
+    });
+
+    function populateTypes() {
+        typeSelect.innerHTML = '<option value="">-- Select Type --</option>';
+        typesData.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type.id;
+            option.textContent = type.name;
+            typeSelect.appendChild(option);
+        });
+        typeSelect.disabled = false;
+    }
+
+    courseSelect.addEventListener('change', function() {
+        semesterSelect.innerHTML = '<option value="">-- Select Semester --</option>';
+        semesterSelect.disabled = true;
+        typeSelect.innerHTML = '<option value="">-- Select Type --</option>';
+        typeSelect.disabled = true;
+
+        const courseId = parseInt(this.value);
+        const course = coursesData.find(c => c.id === courseId);
+
+        if (course && course.semesters.length > 0) {
+            course.semesters.forEach(sem => {
+                const option = document.createElement('option');
+                option.value = sem.id;
+                option.textContent = 'Semester ' + sem.semester_num;
+                semesterSelect.appendChild(option);
+            });
+            semesterSelect.disabled = false;
+        }
+    });
+
+    semesterSelect.addEventListener('change', function() {
+        if (this.value) {
+            populateTypes();
+        } else {
+            typeSelect.innerHTML = '<option value="">-- Select Type --</option>';
+            typeSelect.disabled = true;
+        }
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

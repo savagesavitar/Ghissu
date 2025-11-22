@@ -1,0 +1,276 @@
+/* 1. Google Font Import (Poppins) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #2563eb;       /* Modern Royal Blue */
+    --secondary-color: #1e40af;     /* Darker Blue for gradients */
+    --bg-color: #f3f4f6;            /* Light Grey Background */
+    --card-bg: #ffffff;             /* White Card Background */
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* 2. Navigation */
+.navbar {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--primary-color) !important;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: var(--text-dark) !important;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* 3. Hero Section (Homepage Banner) */
+/* --- HERO SECTION WITH IMAGE --- */
+.hero-header {
+    /* ... other properties ... */
+    /* Lower the alpha values (e.g., from 0.85 to 0.6, from 0.8 to 0.5) */
+    background: linear-gradient(135deg, rgba(37, 100, 235, 0.426), rgba(30, 64, 175, 0.5)), 
+                url('/images/dept.png'); 
+    /* ... other properties ... */
+}
+
+.hero-header::before {
+    /* Lower the alpha value (e.g., from 0.7 to 0.4 or 0.3) */
+    background: rgba(37, 99, 235, 0.4); /* Less intense blue overlay */
+    /* ... other properties ... */
+}
+/* ... rest of .hero-title, .hero-subtitle, .hero-badge from previous update ... */
+.hero-title {
+    font-weight: 700;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* 4. Cards */
+.custom-card {
+    background: var(--card-bg);
+    border-radius: 1rem;
+    border: none;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease;
+}
+
+.custom-card:hover {
+    transform: translateY(-5px); /* Float up effect */
+}
+
+/* 5. Upload Form Styling */
+.form-control, .form-select {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* 6. Materials Table */
+.table-custom thead th {
+    background-color: #eff6ff;
+    color: var(--secondary-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    border: none;
+}
+.table-custom tbody tr {
+    background-color: white;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+}
+.table-custom tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* 7. Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.6rem 1.5rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+}
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+}
+/* public/css/style.css */
+
+/* ... existing styles ... */
+
+/* --- ADD THIS AT THE BOTTOM --- */
+/* Remove the default arrows (carets) from Bootstrap dropdowns */
+.dropdown-toggle::after {
+    display: none !important;
+    content: none !important;
+}
+/* public/css/style.css */
+
+/* ... existing code ... */
+
+/* --- MEME TICKER STYLES --- */
+.meme-section {
+    background: white;
+    padding: 1.5rem 0;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    overflow: hidden; /* Hides the scrollbar */
+    position: relative;
+}
+
+.meme-slider {
+    display: flex;
+    width: calc(250px * 10); /* Width based on number of memes */
+    animation: scroll 20s linear infinite;
+}
+
+.meme-card {
+    width: 250px;
+    height: 250px;
+    margin: 0 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background-color: #f3f4f6;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e7eb;
+}
+
+.meme-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills the box nicely */
+    transition: transform 0.3s;
+}
+
+/* Animation Keyframes */
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-250px * 5)); } /* Moves left by 5 items width */
+}
+
+/* Pause on Hover */
+.meme-slider:hover {
+    animation-play-state: paused;
+}
+
+/* --- NEW SECTION HERO STYLES --- */
+.section-hero-alt {
+    position: relative;
+    color: white;
+    padding: 5rem 0 7rem 0; /* Slightly less padding than main hero */
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Parallax effect */
+    border-radius: 0 0 50% 50% / 4%; /* Rounded bottom curve */
+    margin-top: 3rem; /* Add some space above */
+    margin-bottom: 3rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* Specific background for About Us */
+.section-about {
+    /* Lower the alpha values (e.g., from 0.9 to 0.7, from 0.8 to 0.6) */
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.7), rgba(37, 99, 235, 0.6)), 
+                url('/images/about-bg.png'); 
+}
+
+/* Specific background for Contact Us */
+.section-contact {
+    /* Lower the alpha values (e.g., from 0.9 to 0.7, from 0.8 to 0.6) */
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.7), rgba(75, 85, 99, 0.6)), 
+                url('/images/contact-bg.png'); 
+}
+/* Titles and subtitles within these new sections */
+.section-hero-alt .section-title {
+    font-size: 2.5rem; /* Slightly smaller than main hero title */
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.section-hero-alt .section-subtitle {
+    font-size: 1.15rem;
+    font-weight: 300;
+    opacity: 0.95;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.section-hero-alt .section-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    padding: 0.4rem 1.2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin-bottom: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* --- SECONDARY HERO SECTIONS --- */
+.section-hero-alt {
+    position: relative;
+    color: white;
+    padding: 6rem 0 8rem 0; /* Spacing */
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* The Parallax Effect */
+    border-radius: 0 0 50% 50% / 4%; /* The Curved Bottom */
+    margin-bottom: 4rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* 1. About Us Background (Grey/Blue Theme) */
+/* You will need to add an image named 'about-bg.jpg' to public/images */
+.section-about {
+    background: linear-gradient(135deg, rgba(55, 65, 81, 0.9), rgba(17, 24, 39, 0.8)), 
+                url('/images/about-bg.jpg');
+}
+
+/* 2. Contact Us Background (Orange/Dark Theme) */
+/* You will need to add an image named 'contact-bg.jpg' to public/images */
+.section-contact {
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.9), rgba(154, 52, 18, 0.8)), 
+                url('/images/contact-bg.jpg');
+}
+
+/* Styling for badges inside these sections */
+.section-hero-alt .badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 500;
+    padding: 0.5em 1em;
+    margin-bottom: 1rem;
+}

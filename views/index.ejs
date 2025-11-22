@@ -2,221 +2,496 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Ghissu - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghissu - Academic Portal</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
   
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
+    /* --- 1. HERO HEADER (Main) --- */
+    .hero-header {
+        position: relative;
+        /* Gradient Overlay + Your Image Path */
+        background: linear-gradient(135deg, rgba(37, 100, 235, 0.65), rgba(30, 64, 175, 0.5)), 
+                    url('/images/dept.png'); 
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; /* Parallax */
+        color: white;
+        padding: 8rem 0 10rem 0;
+        text-align: center;
+        border-radius: 0 0 50% 50% / 4%;
+        margin-bottom: 3rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
-    /* --- NAVBAR STYLES --- */
-    .dropdown-submenu { position: relative; }
-    .dropdown-submenu > .dropdown-menu { top: 0; left: 100%; }
-    .dropdown-submenu:hover > .dropdown-menu { display: block; }
-    .dropdown-toggle::after { display: none !important; }
-    .dropdown-item:hover { font-weight: 500; }
-    .nav-link:focus, .btn:focus { outline: none !important; box-shadow: none !important; }
-    .navbar .nav-item .nav-link.active { font-weight: 500; color: #0d6efd !important; }
-    .dropdown-menu { border: none; }
-    .search-image-button { height: 38px; width: auto; border-radius: .25rem; border: none; }
 
-    /* --- LAYOUT & CALCULATOR STYLES --- */
-    .main-content {
-      padding-top: 4rem;
+    /* --- 2. SECONDARY HERO SECTIONS (About & Contact) --- */
+    .section-hero-alt {
+        position: relative;
+        color: white;
+        padding: 6rem 0 8rem 0; 
+        text-align: center;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; /* Parallax */
+        border-radius: 0 0 50% 50% / 4%; 
+        margin-bottom: 4rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
-    .gpa-calculator {
-      padding: 1.5rem;
-      background-color: #f8f9fa;
-      border-radius: 0.5rem;
-      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+
+    /* About Us Background */
+    .section-about {
+        background: linear-gradient(135deg, rgba(55, 65, 81, 0.9), rgba(30, 58, 138, 0.8)), 
+                    url('/images/about-bg.jpg'); 
     }
-    .subject-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
+
+    /* Contact Us Background */
+    .section-contact {
+        background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(234, 88, 12, 0.8)), 
+                    url('/images/contact-bg.jpg'); 
     }
-    .subject-row .form-control, .subject-row .form-label {
-      flex: 1;
+
+    /* Typography */
+    .section-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
+    .section-subtitle { font-size: 1.1rem; font-weight: 300; opacity: 0.95; max-width: 700px; margin: 0 auto; }
+    .section-badge {
+        background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); padding: 0.4rem 1.2rem;
+        border-radius: 50px; font-weight: 600; font-size: 0.85rem; display: inline-block;
+        margin-bottom: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    .course-label {
-        flex: 0 0 80px;
-        font-weight: 500;
+
+    /* --- 3. COMPONENT STYLES --- */
+    
+    /* Calculator */
+    .calculator-modal-content { border-radius: 1rem; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .result-display { font-size: 2.5rem; font-weight: 700; color: var(--primary-color); }
+    .clickable-card { cursor: pointer; transition: all 0.3s ease; }
+    .clickable-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.15) !important; border-color: var(--primary-color); }
+    .delete-btn { color: #ef4444; background: #fee2e2; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; }
+    .delete-btn:hover { background: #ef4444; color: white; }
+
+    /* --- UPDATED FLEXIBLE MEME STYLES --- */
+    .meme-carousel-section { background: #f9fafb; padding: 3rem 0; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; }
+    .meme-carousel-item { padding: 10px; }
+    
+    /* The container is now invisible and just holds layout */
+    .meme-carousel-card { 
+        width: 100%; 
+        height: 500px; /* Fixed height for the slider area so page doesn't jump */
+        margin: 0 auto; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        background: transparent; /* Transparent background */
+        border: none; 
+        box-shadow: none;
     }
-    .result-box {
-      font-size: 1.25rem;
-      font-weight: 600;
+    
+    /* The Border/Shadow is now applied directly to the IMAGE */
+    .meme-carousel-card img { 
+        max-width: 100%; 
+        max-height: 100%; 
+        width: auto;  /* Let width adjust to image ratio */
+        height: auto; /* Let height adjust to image ratio */
+        object-fit: contain; 
+        
+        /* Style the image itself */
+        background-color: white; 
+        border-radius: 1rem; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Flexible shadow */
+        border: 1px solid #e5e7eb; /* Flexible border */
     }
-    .delete-btn {
-      flex: 0 0 auto;
-    }
+
+    .carousel-control-prev-icon, .carousel-control-next-icon { filter: invert(1) grayscale(100); width: 3rem; height: 3rem; }
+    .carousel-control-prev { left: -5%; opacity: 1; } .carousel-control-next { right: -5%; opacity: 1; }
+    @media (max-width: 992px) { .carousel-control-prev { left: 0; } .carousel-control-next { right: 0; } .meme-carousel-card { height: 350px; } }
+
+    /* FAQ */
+    .accordion-custom .accordion-item { border: none; border-radius: 0.75rem; margin-bottom: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.02); background: white; border: 1px solid #e5e7eb; overflow: hidden; }
+    .accordion-custom .accordion-button { font-weight: 600; color: var(--text-dark); background-color: white; padding: 1.25rem; box-shadow: none; }
+    .accordion-custom .accordion-button:not(.collapsed) { color: var(--primary-color); background-color: #eff6ff; box-shadow: none; }
+    .accordion-custom .accordion-body { color: #6b7280; padding: 1.25rem; line-height: 1.6; }
+    
+    .fade-in { animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @media (min-width: 992px) { .dropdown-submenu:hover > .dropdown-menu { display: block; } .dropdown-menu { margin-top: 0; } }
   </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a href="/" class="navbar-brand ms-2">
-        <img src="/images/Hyper.png" alt="Ghissu Logo" style="height: 45px;">
-   </a>
-    
-    <ul class="navbar-nav me-auto">
-      <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Courses</a>
-        <ul class="dropdown-menu">
-            <% courses.forEach(course => { %>
-              <li class="dropdown-submenu">
-                <a class="dropdown-item dropdown-toggle" href="#"><%= course.name %></a>
-                <ul class="dropdown-menu">
-                  <% course.semesters.forEach(semester => { %>
-                    <li class="dropdown-submenu">
-                      <a class="dropdown-item dropdown-toggle" href="#">Semester <%= semester.semester_num %></a>
-                      <ul class="dropdown-menu">
-                        <% semester.courseTypes.forEach(courseType => { %>
-                          <li>
-                            <a class="dropdown-item" href="/semester/<%= semester.id %>/coursetype/<%= courseType.id %>">
-                              <%= courseType.name %>
-                            </a>
-                          </li>
-                        <% }) %>
-                      </ul>
-                    </li>
-                  <% }) %>
-                </ul>
-              </li>
-            <% }) %>
-          </ul>
-      </li>
-    </ul>
-    <form class="d-flex mx-auto align-items-center" action="/search" method="GET">
-      <input class="form-control me-2" type="search" name="query" placeholder="Search Courses" aria-label="Search" required>
-      <input 
-        type="image" 
-        src="/images/glass.jpg" 
-        alt="Search" 
-        class="search-image-button"
-      >
-    </form>
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link <%= activePage === 'upload' ? 'active' : '' %>" href="/upload">Upload</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link <%= activePage === 'feedback' ? 'active' : '' %>" href="/feedback">Feedback</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link <%= activePage === 'queries' ? 'active' : '' %>" href="/queries">Queries</a>
-      </li>
-    </ul>
-  </div>
-</nav>
 
-<div class="container main-content">
-  <div class="row">
-    <div class="col-md-5 offset-md-7">
-      <div class="gpa-calculator">
-        <h4 class="text-center mb-3">SGPA Calculator</h4>
-        <div id="subjects-container">
-          <div class="subject-row">
-            <label class="course-label">Course 1</label>
-            <input type="number" class="form-control" placeholder="Points" min="0" max="10" step="0.1" required>
-            <input type="number" class="form-control" placeholder="Credits" min="1" required>
-          </div>
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a href="/" class="navbar-brand"><i class="fas fa-graduation-cap me-2"></i>Ghissu</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Browse Courses</a>
+            <ul class="dropdown-menu shadow border-0">
+              <% courses.forEach(course => { %>
+                <li class="dropdown-submenu position-relative">
+                  <a class="dropdown-item dropdown-toggle" href="#"><%= course.name %></a>
+                  <ul class="dropdown-menu shadow border-0 position-absolute top-0 start-100">
+                    <% course.semesters.forEach(semester => { %>
+                      <li class="dropdown-submenu position-relative">
+                        <a class="dropdown-item dropdown-toggle" href="#">Semester <%= semester.semester_num %></a>
+                        <ul class="dropdown-menu shadow border-0 position-absolute top-0 start-100">
+                          <% semester.types.forEach(type => { %>
+                            <li><a class="dropdown-item" href="/materials/semester/<%= semester.id %>/type/<%= type.id %>"><%= type.name %></a></li>
+                          <% }) %>
+                        </ul>
+                      </li>
+                    <% }) %>
+                  </ul>
+                </li>
+              <% }) %>
+            </ul>
+          </li>
+        </ul>
+        <ul class="navbar-nav align-items-center gap-2">
+            <li class="nav-item"><a class="nav-link" href="/feedback">Feedback</a></li>
+            <li class="nav-item"><a class="nav-link" href="/queries">Queries</a></li>
+            <li class="nav-item"><a href="/upload" class="btn btn-primary shadow-sm rounded-pill px-4"><i class="fas fa-cloud-upload-alt me-2"></i>Upload</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero-header">
+    <div class="container">
+      <h1 class="hero-title">Master Your Syllabus.</h1>
+      <p class="lead mb-4 opacity-75">Access notes, previous papers, and tools to ace your exams.</p>
+    </div>
+  </header>
+
+  <div class="container mb-5">
+    <div class="text-center mb-4">
+        <h3 class="fw-bold text-primary"><i class="fas fa-star me-2"></i>Why use Ghissu?</h3>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="custom-card p-4 h-100 text-center">
+                <div class="text-primary mb-3"><i class="fas fa-book-reader fa-3x"></i></div>
+                <h6 class="fw-bold">Organized Notes</h6>
+                <p class="small text-muted mb-0">Sorted by Course, Semester, and Type.</p>
+            </div>
         </div>
-        <div class="d-flex justify-content-between mt-3">
-          <button class="btn btn-sm btn-secondary" id="add-subject-btn">+ Add Course</button>
-          <button class="btn btn-sm btn-primary" id="calculate-btn">Calculate</button>
+        <div class="col-md-6 col-lg-3">
+            <div class="custom-card p-4 h-100 text-center">
+                <div class="text-primary mb-3"><i class="fab fa-google-drive fa-3x"></i></div>
+                <h6 class="fw-bold">Direct Access</h6>
+                <p class="small text-muted mb-0">One-click Drive links. No waiting.</p>
+            </div>
         </div>
-        <div class="mt-3 text-center">
-          <h6 class="mb-1">Your Semester GPA (SGPA) is:</h6>
-          <div id="result" class="result-box text-success">0.00</div>
+        <div class="col-md-6 col-lg-3">
+            <div class="custom-card p-4 h-100 text-center">
+                <div class="text-primary mb-3"><i class="fas fa-users fa-3x"></i></div>
+                <h6 class="fw-bold">Community</h6>
+                <p class="small text-muted mb-0">Share resources with peers easily.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="custom-card clickable-card p-4 h-100 text-center border-primary" data-bs-toggle="modal" data-bs-target="#calculatorModal">
+                <div class="text-primary mb-3"><i class="fas fa-calculator fa-3x"></i></div>
+                <h6 class="fw-bold">SGPA Calculator</h6>
+                <p class="small text-muted mb-0">Click to calculate your Semester GPA.</p>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="calculatorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content calculator-modal-content p-3">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold"><i class="fas fa-calculator me-2 text-primary"></i>SGPA Calculator</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div id="subjects-container">
+                <div class="subject-row mb-3">
+                  <div class="d-flex justify-content-between mb-1">
+                    <label class="small fw-bold text-muted">Course 1</label>
+                  </div>
+                  <div class="d-flex gap-2">
+                      <input type="number" class="form-control" placeholder="Grade (0-10)" min="0" max="10" step="0.1">
+                      <input type="number" class="form-control" placeholder="Credits" min="1">
+                  </div>
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-4 mb-4">
+                <button class="btn btn-light border w-100" id="add-subject-btn"><i class="fas fa-plus me-1"></i> Add</button>
+                <button class="btn btn-primary w-100 shadow-sm" id="calculate-btn">Calculate</button>
+            </div>
+            <div class="text-center p-3 bg-light rounded-3 border border-dashed">
+                <h6 class="text-muted text-uppercase small fw-bold mb-2">Your Result</h6>
+                <div id="result" class="result-display">0.00</div>
+            </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // --- Script for Navbar Dropdowns ---
-    const submenuToggles = document.querySelectorAll('.dropdown-submenu > .dropdown-toggle');
-    submenuToggles.forEach(function(toggle) {
-      toggle.addEventListener('click', function(event) {
-        event.stopPropagation();
+  <section class="meme-carousel-section">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h4 class="fw-bold text-primary mb-0"><i class="fas fa-globe-americas me-2"></i>Geology Rocks! 🪨</h4>
+            <p class="text-muted small"><%= locals.memeFiles ? memeFiles.length : 0 %> memes found</p>
+        </div>
+        <div id="memeCarousel" class="carousel slide" data-bs-interval="false">
+            <div class="carousel-inner">
+                <% if (locals.memeFiles && memeFiles.length > 0) { %>
+                    <% memeFiles.forEach((file, index) => { %>
+                        <div class="carousel-item meme-carousel-item <%= index === 0 ? 'active' : '' %>">
+                            <div class="meme-carousel-card">
+                                <img src="/images/memes/<%= file %>" alt="Meme">
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="carousel-item active meme-carousel-item">
+                        <div class="meme-carousel-card">
+                            <div class="p-5 text-center text-muted">
+                                <h5>No memes found</h5>
+                                <small>Check public/images/memes folder</small>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#memeCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#memeCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+  </section>
+
+  <section class="section-hero-alt section-about">
+    <div class="container">
+        <div class="section-badge"><i class="fas fa-info-circle me-2"></i>About Ghissu</div>
+        <h2 class="section-title">Built for the Campus, by the Campus.</h2>
+        <p class="section-subtitle">
+            Ghissu is an open-source initiative to make academic life at IIT Roorkee a little less stressful.
+            We believe that finding study materials shouldn't be harder than studying itself.
+        </p>
+        <div class="d-flex justify-content-center gap-4 mt-4">
+            <div class="d-flex align-items-center text-white"><i class="fas fa-check-circle text-warning me-2"></i><span>Open Source</span></div>
+            <div class="d-flex align-items-center text-white"><i class="fas fa-check-circle text-warning me-2"></i><span>Community Led</span></div>
+        </div>
+    </div>
+  </section>
+
+  <div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="p-4 bg-white shadow-sm rounded-3 h-100 text-center border-top border-4 border-primary">
+                        <div class="mb-3 text-primary"><i class="fas fa-university fa-3x"></i></div>
+                        <h5 class="fw-bold">IIT Roorkee</h5>
+                        <p class="text-muted mb-0 small">Department of Earth Sciences<br><span class="text-success"><i class="fas fa-dot-circle me-1" style="font-size: 10px;"></i>Active Semester</span></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-4 bg-white shadow-sm rounded-3 h-100 text-center border-top border-4 border-primary">
+                        <div class="mb-3 text-primary"><i class="fas fa-code-branch fa-3x"></i></div>
+                        <h5 class="fw-bold">Contribute</h5>
+                        <p class="text-muted mb-0 small">Found a bug? Want to add a feature? Join us on GitHub.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <section class="py-5 bg-light border-top border-bottom">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h3 class="fw-bold text-dark">Frequently Asked Questions</h3>
+            <p class="text-muted">Common queries from Earth Science students.</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion accordion-custom" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">Can we get slides In Seismology Courses?</button></h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion"><div class="accordion-body">Available through Previous Year Course Content Drive.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">Can we get slides In AI/ML Courses?</button></h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Yes, usually Provided.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">Are there Surprise test in Seismology Course?</button></h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Yes, Frequent Test In Class For CWS.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">Can we get slides In Geodynamics Courses?</button></h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Yes Provided, but Notes In Class Is usually More than Enough.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">Do We have to repeat the Geophysical Modeling EST-143?</button></h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Yes, under different code name (ESN-401) in 4th Year.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSix"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix">Where Did Esc Students go On field Trip?</button></h2>
+                        <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">In the Academic Year of 2025 - 2026:<br>- GPT - Jaisalmer<br>- Gt - Rishikesh</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSeven"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven">Is Departmental Lab Open To all UG?</button></h2>
+                        <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Yes, When Approved With Any Professor.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingEight"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight">What is the pattern of quiz in Electrical Prospecting?</button></h2>
+                        <div id="collapseEight" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">MCQs + fill ups.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingNine"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine">Where Can We talk to Resolve Issue Regarding Courses?</button></h2>
+                        <div id="collapseNine" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Academic Office In Thomson Building Opposite to TMI Lab Side.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTen"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen">Is it true Earth Science Department Has a Museum?</button></h2>
+                        <div id="collapseTen" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Yes! Named After Henry Benedict Medlicott.</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <section class="section-hero-alt section-contact">
+    <div class="container">
+        <div class="section-badge"><i class="fas fa-paper-plane me-2"></i>Get in Touch</div>
+        <h2 class="section-title">We're Here to Help.</h2>
+        <p class="section-subtitle">
+            Have a resource to share, found a bug, or just want to chat? 
+            Reach out to the academic team or developers.
+        </p>
+        <div class="mt-4">
+            <a href="mailto:support@ghissu.iitr.ac.in" class="btn btn-light fw-bold px-4 py-2 rounded-pill shadow-sm text-primary">
+                <i class="fas fa-envelope me-2"></i>Email Support
+            </a>
+        </div>
+    </div>
+  </section>
+
+  <div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 h-100 clickable-card bg-white text-center">
+                        <div class="text-primary mb-3"><i class="fas fa-map-marker-alt fa-2x"></i></div>
+                        <h6 class="fw-bold">Visit Us</h6>
+                        <p class="small text-muted mb-0">Academic Office<br>Thomson Building</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <a href="/queries" class="text-decoration-none text-dark">
+                        <div class="p-4 border rounded-3 h-100 clickable-card bg-white text-center">
+                            <div class="text-primary mb-3"><i class="fas fa-question-circle fa-2x"></i></div>
+                            <h6 class="fw-bold">Ask a Question</h6>
+                            <p class="small text-muted mb-0">Post a public query to the community.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/feedback" class="text-decoration-none text-dark">
+                        <div class="p-4 border rounded-3 h-100 clickable-card bg-white text-center">
+                            <div class="text-primary mb-3"><i class="fas fa-comments fa-2x"></i></div>
+                            <h6 class="fw-bold">Send Feedback</h6>
+                            <p class="small text-muted mb-0">Suggestions? Let us know anonymously.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <footer class="text-center py-4 text-muted small border-top mt-auto bg-light">
+    <p class="mb-0">
+        &copy; 2025 Ghissu Portal. Built for students of <strong>IIT Roorkee</strong> 🎓
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navbar Dropdown Fix
+      const submenuToggles = document.querySelectorAll('.dropdown-submenu > .dropdown-toggle');
+      submenuToggles.forEach(function(toggle) {
+        toggle.addEventListener('click', function(event) {
+          event.preventDefault(); event.stopPropagation();
+          const parent = this.parentElement.parentElement;
+          const siblings = parent.querySelectorAll('.dropdown-submenu .dropdown-menu');
+          siblings.forEach(menu => { if(menu !== this.nextElementSibling) menu.classList.remove('show'); });
+          this.nextElementSibling.classList.toggle('show');
+        });
       });
-    });
 
-    // --- Script for GPA Calculator ---
-    const subjectsContainer = document.getElementById('subjects-container');
-    const addSubjectBtn = document.getElementById('add-subject-btn');
-    const calculateBtn = document.getElementById('calculate-btn');
-    const resultDiv = document.getElementById('result');
-    let courseCounter = 1;
+      // SGPA Logic
+      const subjectsContainer = document.getElementById('subjects-container');
+      const addSubjectBtn = document.getElementById('add-subject-btn');
+      const calculateBtn = document.getElementById('calculate-btn');
+      const resultDiv = document.getElementById('result');
+      let courseCounter = 1;
 
-    // ADD A NEW COURSE ROW
-    addSubjectBtn.addEventListener('click', function() {
-      courseCounter++;
-      const newRow = document.createElement('div');
-      newRow.className = 'subject-row';
-      newRow.innerHTML = `
-        <label class="course-label">Course ${courseCounter}</label>
-        <input type="number" class="form-control" placeholder="Points" min="0" max="10" step="0.1" required>
-        <input type="number" class="form-control" placeholder="Credits" min="1" required>
-        <button class="btn btn-sm btn-danger delete-btn">
-          <i class="bi bi-trash"></i>
-        </button>
-      `;
-      subjectsContainer.appendChild(newRow);
-    });
-    
-    // HANDLE DELETING A COURSE ROW
-    subjectsContainer.addEventListener('click', function(event) {
-      const deleteButton = event.target.closest('.delete-btn');
-      if (deleteButton) {
-        deleteButton.closest('.subject-row').remove();
-      }
-    });
+      addSubjectBtn.addEventListener('click', function() {
+        courseCounter++;
+        const newRow = document.createElement('div');
+        newRow.className = 'subject-row mb-3 fade-in';
+        newRow.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="small fw-bold text-muted">Course ${courseCounter}</label>
+            <button class="delete-btn" type="button"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="d-flex gap-2">
+            <input type="number" class="form-control" placeholder="Grade (0-10)" min="0" max="10" step="0.1">
+            <input type="number" class="form-control" placeholder="Credits" min="1">
+          </div>
+        `;
+        subjectsContainer.appendChild(newRow);
+      });
+      
+      subjectsContainer.addEventListener('click', function(event) {
+        const deleteBtn = event.target.closest('.delete-btn');
+        if (deleteBtn) { deleteBtn.closest('.subject-row').remove(); }
+      });
 
-    // CALCULATE THE GPA
-    calculateBtn.addEventListener('click', function() {
-      const subjectRows = subjectsContainer.querySelectorAll('.subject-row');
-      let totalPoints = 0;
-      let totalCredits = 0;
-      let allFieldsValid = true;
-
-      subjectRows.forEach(row => {
-        const gradeInput = row.querySelectorAll('input[type="number"]')[0];
-        const creditInput = row.querySelectorAll('input[type="number"]')[1];
-        
-        const gradeValue = parseFloat(gradeInput.value);
-        const creditValue = parseFloat(creditInput.value);
-
-        if (!isNaN(gradeValue) && gradeValue >= 0 && gradeValue <= 10 && !isNaN(creditValue) && creditValue > 0) {
-          totalPoints += gradeValue * creditValue;
-          totalCredits += creditValue;
+      calculateBtn.addEventListener('click', function() {
+        const rows = subjectsContainer.querySelectorAll('.subject-row');
+        let totalPoints = 0, totalCredits = 0, valid = true;
+        rows.forEach(row => {
+          const inputs = row.querySelectorAll('input');
+          const grade = parseFloat(inputs[0].value);
+          const credit = parseFloat(inputs[1].value);
+          if (!isNaN(grade) && grade >= 0 && grade <= 10 && !isNaN(credit) && credit > 0) {
+            totalPoints += grade * credit; totalCredits += credit;
+            inputs[0].classList.remove('is-invalid'); inputs[1].classList.remove('is-invalid');
+          } else {
+            if(inputs[0].value || inputs[1].value) { 
+                valid = false;
+                if(isNaN(grade) || grade < 0 || grade > 10) inputs[0].classList.add('is-invalid');
+                if(isNaN(credit) || credit <= 0) inputs[1].classList.add('is-invalid');
+            }
+          }
+        });
+        if (!valid || totalCredits === 0) {
+          resultDiv.textContent = "--.--"; resultDiv.style.color = "#ef4444";
         } else {
-          allFieldsValid = false;
+          const sgpa = totalPoints / totalCredits;
+          resultDiv.textContent = sgpa.toFixed(2); resultDiv.style.color = "var(--primary-color)";
         }
       });
-
-      if (!allFieldsValid || totalCredits === 0) {
-        resultDiv.textContent = 'Invalid Input';
-        resultDiv.classList.remove('text-success');
-        resultDiv.classList.add('text-danger');
-        return;
-      }
-      
-      const sgpa = totalPoints / totalCredits;
-      resultDiv.textContent = sgpa.toFixed(2);
-      resultDiv.classList.remove('text-danger');
-      resultDiv.classList.add('text-success');
     });
-  });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+  </script>
 </body>
 </html>
