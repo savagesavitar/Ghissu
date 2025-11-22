@@ -1,27 +1,28 @@
-// server.js (The new, clean version)
 const express = require('express');
 const path = require('path');
 
-// Import your new router
+// 1. Import your routes
+// IMPORTANT: Make sure the file inside 'routes' folder is actually named 'courseRoutes.js'
 const courseRoutes = require('./routes/courseRoutes');
 
 const app = express();
+
+// 2. Set the Port (Required for Render)
 const PORT = process.env.PORT || 3000;
 
-// Set up the view engine (EJS)
+// 3. Set up View Engine (EJS)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middleware to parse form data
-app.use(express.urlencoded({ extended: true }));
+// 4. Middleware
+app.use(express.urlencoded({ extended: true })); // Parse form data (for Queries/Uploads)
+app.use(express.json()); // Parse JSON
+app.use(express.static(path.join(__dirname, 'public'))); // Serve images and CSS
 
-// Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Use the routes defined in courseRoutes.js
+// 5. Use the Routes
 app.use('/', courseRoutes);
 
-// Start the server
+// 6. Start the Server
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
