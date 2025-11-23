@@ -207,7 +207,7 @@ body {
 .section-contact {
     /* Lower the alpha values (e.g., from 0.9 to 0.7, from 0.8 to 0.6) */
     background: linear-gradient(135deg, rgba(17, 24, 39, 0.7), rgba(75, 85, 99, 0.6)), 
-                url('/images/contact-bg.jpg'); 
+                url('/images/contact-bg.jpeg'); 
 }
 /* Titles and subtitles within these new sections */
 .section-hero-alt .section-title {
@@ -255,14 +255,14 @@ body {
 /* You will need to add an image named 'about-bg.jpg' to public/images */
 .section-about {
     background: linear-gradient(135deg, rgba(55, 65, 81, 0.9), rgba(17, 24, 39, 0.8)), 
-                url('/images/about-bg.jpg');
+                url('/images/about-bg.jpeg');
 }
 
 /* 2. Contact Us Background (Orange/Dark Theme) */
 /* You will need to add an image named 'contact-bg.jpg' to public/images */
 .section-contact {
     background: linear-gradient(135deg, rgba(234, 88, 12, 0.9), rgba(154, 52, 18, 0.8)), 
-                url('/images/contact-bg.jpg');
+                url('/images/contact-bg.jpeg');
 }
 
 /* Styling for badges inside these sections */
