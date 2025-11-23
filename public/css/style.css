@@ -48,7 +48,7 @@ body {
     /* ... other properties ... */
     /* Lower the alpha values (e.g., from 0.85 to 0.6, from 0.8 to 0.5) */
     background: linear-gradient(135deg, rgba(37, 100, 235, 0.426), rgba(30, 64, 175, 0.5)), 
-                url('/images/dept.png'); 
+                url('/images/dept.jpeg'); 
     /* ... other properties ... */
 }
 
@@ -200,14 +200,14 @@ body {
 .section-about {
     /* Lower the alpha values (e.g., from 0.9 to 0.7, from 0.8 to 0.6) */
     background: linear-gradient(135deg, rgba(30, 58, 138, 0.7), rgba(37, 99, 235, 0.6)), 
-                url('/images/about-bg.png'); 
+                url('/images/about-bg.jpeg'); 
 }
 
 /* Specific background for Contact Us */
 .section-contact {
     /* Lower the alpha values (e.g., from 0.9 to 0.7, from 0.8 to 0.6) */
     background: linear-gradient(135deg, rgba(17, 24, 39, 0.7), rgba(75, 85, 99, 0.6)), 
-                url('/images/contact-bg.png'); 
+                url('/images/contact-bg.jpg'); 
 }
 /* Titles and subtitles within these new sections */
 .section-hero-alt .section-title {
