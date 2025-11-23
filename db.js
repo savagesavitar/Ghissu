@@ -1,21 +1,18 @@
-const mysql = require('mysql2'); // Use standard mysql2 (or mysql2/promise)
-const util = require('util');
+// db.js
+const mysql = require('mysql2/promise'); // <--- IMPORTANT: Using Promise version
 require('dotenv').config();
 
-// 1. Setup Connection Config
 const dbConfig = process.env.DATABASE_URL
     ? {
-        // If running on Render (Cloud)
+        // CLOUD SETTINGS (Render)
         uri: process.env.DATABASE_URL,
-        ssl: {
-            rejectUnauthorized: false // REQUIRED for Aiven/Render Cloud DBs
-        },
+        ssl: { rejectUnauthorized: false }, // Required for secure cloud connection
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0
     }
     : {
-        // If running on Localhost (Laptop)
+        // LOCAL SETTINGS (Laptop)
         host: 'localhost',
         user: 'root',
         password: 'your_local_password', // Keep your local password here
@@ -25,23 +22,20 @@ const dbConfig = process.env.DATABASE_URL
         queueLimit: 0
     };
 
-// 2. Create the Pool
-const pool = process.env.DATABASE_URL
-    ? mysql.createPool(dbConfig.uri) // Cloud uses URI string
-    : mysql.createPool(dbConfig);    // Local uses object params
+// Create the pool
+const pool = process.env.DATABASE_URL 
+    ? mysql.createPool(dbConfig.uri) 
+    : mysql.createPool(dbConfig);
 
-// 3. Enable Async/Await (Promisify)
-pool.query = util.promisify(pool.query).bind(pool);
-
-// 4. Test Connection (Optional debug log)
-pool.getConnection((err, connection) => {
-    if (err) {
-        console.error('❌ Database Connection Failed:', err.code);
-        console.error('   Make sure DATABASE_URL is set in Render Environment Variables.');
-    } else {
+// Helper to check connection (Optional but good for debugging logs)
+(async () => {
+    try {
+        const connection = await pool.getConnection();
         console.log('✅ Connected to Database successfully!');
         connection.release();
+    } catch (err) {
+        console.error('❌ Database Connection Failed:', err.message);
     }
-});
+})();
 
 module.exports = pool;
