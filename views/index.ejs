@@ -12,12 +12,11 @@
     /* --- 1. HERO HEADER (Main) --- */
     .hero-header {
         position: relative;
-        /* Gradient Overlay + Your Image Path */
         background: linear-gradient(135deg, rgba(37, 100, 235, 0.65), rgba(30, 64, 175, 0.5)), 
                     url('/images/dept.jpeg'); 
         background-size: cover;
         background-position: center;
-        background-attachment: fixed; /* Parallax */
+        background-attachment: fixed;
         color: white;
         padding: 8rem 0 10rem 0;
         text-align: center;
@@ -34,19 +33,17 @@
         text-align: center;
         background-size: cover;
         background-position: center;
-        background-attachment: fixed; /* Parallax */
+        background-attachment: fixed;
         border-radius: 0 0 50% 50% / 4%; 
         margin-bottom: 4rem;
         box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
 
-    /* About Us Background */
     .section-about {
         background: linear-gradient(135deg, rgba(55, 65, 81, 0.9), rgba(30, 58, 138, 0.8)), 
                     url('/images/about-bg.jpeg'); 
     }
 
-    /* Contact Us Background */
     .section-contact {
         background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(234, 88, 12, 0.8)), 
                     url('/images/contact-bg.jpeg'); 
@@ -62,8 +59,6 @@
     }
 
     /* --- 3. COMPONENT STYLES --- */
-    
-    /* Calculator */
     .calculator-modal-content { border-radius: 1rem; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
     .result-display { font-size: 2.5rem; font-weight: 700; color: var(--primary-color); }
     .clickable-card { cursor: pointer; transition: all 0.3s ease; }
@@ -71,38 +66,16 @@
     .delete-btn { color: #ef4444; background: #fee2e2; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; }
     .delete-btn:hover { background: #ef4444; color: white; }
 
-    /* --- UPDATED FLEXIBLE MEME STYLES --- */
+    /* Meme Carousel */
     .meme-carousel-section { background: #f9fafb; padding: 3rem 0; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; }
     .meme-carousel-item { padding: 10px; }
-    
-    /* The container is now invisible and just holds layout */
     .meme-carousel-card { 
-        width: 100%; 
-        height: 500px; /* Fixed height for the slider area so page doesn't jump */
-        margin: 0 auto; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        background: transparent; /* Transparent background */
-        border: none; 
-        box-shadow: none;
+        width: 100%; height: 500px; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: transparent; border: none; box-shadow: none;
     }
-    
-    /* The Border/Shadow is now applied directly to the IMAGE */
     .meme-carousel-card img { 
-        max-width: 100%; 
-        max-height: 100%; 
-        width: auto;  /* Let width adjust to image ratio */
-        height: auto; /* Let height adjust to image ratio */
-        object-fit: contain; 
-        
-        /* Style the image itself */
-        background-color: white; 
-        border-radius: 1rem; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Flexible shadow */
-        border: 1px solid #e5e7eb; /* Flexible border */
+        max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; 
+        background-color: white; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #e5e7eb; 
     }
-
     .carousel-control-prev-icon, .carousel-control-next-icon { filter: invert(1) grayscale(100); width: 3rem; height: 3rem; }
     .carousel-control-prev { left: -5%; opacity: 1; } .carousel-control-next { right: -5%; opacity: 1; }
     @media (max-width: 992px) { .carousel-control-prev { left: 0; } .carousel-control-next { right: 0; } .meme-carousel-card { height: 350px; } }
@@ -287,6 +260,47 @@
     </div>
   </section>
 
+  <% if (locals.feedbacks && feedbacks.length > 0) { %>
+    <section class="py-5 bg-light mb-5">
+      <div class="container">
+        <div class="text-center mb-5">
+          <h2 class="fw-bold"><i class="fas fa-quote-left text-primary me-2"></i>Student Voices</h2>
+          <p class="text-muted">What others are saying about Ghissu Portal</p>
+        </div>
+
+        <div class="row g-4">
+          <% feedbacks.forEach(item => { %>
+            <div class="col-md-4">
+              <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4">
+                  <div class="mb-3 text-warning small">
+                    <% for(let i=0; i < item.rating; i++) { %> <i class="fas fa-star"></i> <% } %>
+                    <% for(let i=item.rating; i < 5; i++) { %> <i class="far fa-star"></i> <% } %>
+                  </div>
+                  
+                  <p class="card-text text-secondary fst-italic">"<%= item.message %>"</p>
+                  
+                  <div class="d-flex align-items-center mt-4">
+                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
+                      <i class="fas fa-user"></i>
+                    </div>
+                    <div class="ms-3">
+                      <h6 class="mb-0 fw-bold"><%= item.student_name || 'Anonymous Student' %></h6>
+                      <small class="text-muted">Verified User</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+        
+        <div class="text-center mt-5">
+          <a href="/feedback" class="btn btn-outline-primary rounded-pill px-4">Write a Review</a>
+        </div>
+      </div>
+    </section>
+  <% } %>
   <div class="container mb-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">

@@ -31,12 +31,10 @@ exports.getHomePage = async (req, res) => {
     });
     const courses = Array.from(coursesMap.values());
 
-    // 2. SAFE MEME LOADING (The Fix!)
+    // 2. SAFE MEME LOADING
     const memeDir = path.join(__dirname, '../public/images/memes');
     let memeFiles = [];
-
     try {
-        // Only try to read if the folder actually exists
         if (fs.existsSync(memeDir)) {
             memeFiles = fs.readdirSync(memeDir).filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
         } else {
@@ -44,14 +42,18 @@ exports.getHomePage = async (req, res) => {
         }
     } catch (err) {
         console.error("Error checking meme folder:", err);
-        // Do nothing, just let memeFiles be empty []
     }
 
-    // 3. Render the page
+    // 3. FETCH LATEST FEEDBACK (🆕 NEW ADDITION)
+    // This fetches the 3 most recent feedback entries
+    const [feedbacks] = await db.query('SELECT * FROM feedback ORDER BY created_at DESC LIMIT 3');
+
+    // 4. Render the page with feedbacks
     res.render('index', { 
       activePage: 'home', 
       courses: courses,
-      memeFiles: memeFiles 
+      memeFiles: memeFiles,
+      feedbacks: feedbacks // <--- Sent to the view here
     });
 
   } catch (err) {
