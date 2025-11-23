@@ -10,19 +10,14 @@ const path = require('path');
 // 1. HOMEPAGE: Fetch Courses + Read Meme Folder
 exports.getHomePage = async (req, res) => {
   try {
-    // --- PART A: Database Queries (Courses) ---
+    // 1. Fetch Courses for Navbar
     const [courseTypes] = await db.query('SELECT * FROM course_types');
-    
     const sqlQuery = `
-      SELECT 
-        c.id AS course_id, c.name AS course_name,
-        s.id AS semester_id, s.semester_num
-      FROM courses c
-      LEFT JOIN semesters s ON c.id = s.course_id
-      ORDER BY c.id, s.semester_num;
+      SELECT c.id AS course_id, c.name AS course_name, s.id AS semester_id, s.semester_num
+      FROM courses c LEFT JOIN semesters s ON c.id = s.course_id ORDER BY c.id, s.semester_num;
     `;
     const [rows] = await db.query(sqlQuery);
-
+    
     const coursesMap = new Map();
     rows.forEach(row => {
       if (!row.course_id) return;
@@ -31,35 +26,32 @@ exports.getHomePage = async (req, res) => {
       }
       const course = coursesMap.get(row.course_id);
       if (row.semester_id && !course.semesters.find(s => s.id === row.semester_id)) {
-        course.semesters.push({
-          id: row.semester_id,
-          semester_num: row.semester_num,
-          types: courseTypes 
-        });
+        course.semesters.push({ id: row.semester_id, semester_num: row.semester_num, types: courseTypes });
       }
     });
     const courses = Array.from(coursesMap.values());
 
-    // --- PART B: Read Meme Files from Folder ---
+    // 2. SAFE MEME LOADING (The Fix!)
     const memeDir = path.join(__dirname, '../public/images/memes');
     let memeFiles = [];
-    
+
     try {
-      if (fs.existsSync(memeDir)) {
-        // Read directory and filter for images only (jpg, png, jpeg, gif, webp)
-        memeFiles = fs.readdirSync(memeDir).filter(file => {
-          return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
-        });
-      }
+        // Only try to read if the folder actually exists
+        if (fs.existsSync(memeDir)) {
+            memeFiles = fs.readdirSync(memeDir).filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
+        } else {
+            console.log("⚠️ Meme folder missing. Skipping memes.");
+        }
     } catch (err) {
-      console.error("Error reading meme folder:", err);
+        console.error("Error checking meme folder:", err);
+        // Do nothing, just let memeFiles be empty []
     }
 
-    // --- PART C: Render Page ---
+    // 3. Render the page
     res.render('index', { 
-      courses, 
-      activePage: 'home',
-      memeFiles: memeFiles // <--- Sending the list of files to EJS
+      activePage: 'home', 
+      courses: courses,
+      memeFiles: memeFiles 
     });
 
   } catch (err) {
@@ -67,10 +59,6 @@ exports.getHomePage = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
-// controllers/courseController.js
-
-// ... (Keep getHomePage as it is) ...
-
 // 2. UPLOAD PAGE: Checks for success flag and sends data
 exports.getUploadPage = async (req, res) => {
   try {
