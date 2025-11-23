@@ -243,9 +243,64 @@ exports.getMaterialsForCourse = async (req, res) => {
 // ... (at the end of the file, with your other exports)
 
 // Renders the feedback page
-exports.getFeedbackPage = (req, res) => {
-  // This line renders the EJS file and makes the nav button active
-  res.render('feedback', { activePage: 'feedback' });
+// ... existing functions ...
+
+// 9. RENDER FEEDBACK PAGE
+exports.getFeedbackPage = async (req, res) => {
+  try {
+    // Fetch courses for the navbar
+    const [courseTypes] = await db.query('SELECT * FROM course_types');
+    const sqlQuery = `
+      SELECT c.id AS course_id, c.name AS course_name, s.id AS semester_id, s.semester_num
+      FROM courses c LEFT JOIN semesters s ON c.id = s.course_id ORDER BY c.id, s.semester_num;
+    `;
+    const [rows] = await db.query(sqlQuery);
+    const coursesMap = new Map();
+    rows.forEach(row => {
+      if (!row.course_id) return;
+      if (!coursesMap.has(row.course_id)) { coursesMap.set(row.course_id, { id: row.course_id, name: row.course_name, semesters: [] }); }
+      const course = coursesMap.get(row.course_id);
+      if (row.semester_id && !course.semesters.find(s => s.id === row.semester_id)) {
+        course.semesters.push({ id: row.semester_id, semester_num: row.semester_num, types: courseTypes });
+      }
+    });
+    const courses = Array.from(coursesMap.values());
+
+    // Check for success message
+    const successMessage = req.query.status === 'success' ? 'Thank you for your feedback!' : null;
+
+    res.render('feedback', { 
+        activePage: 'feedback', 
+        courses: courses, 
+        successMessage: successMessage 
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
+
+// 10. HANDLE FEEDBACK SUBMISSION
+exports.handleFeedback = async (req, res) => {
+  try {
+    const { student_name, email, message, rating } = req.body;
+
+    if (!message) {
+      return res.status(400).send('Message is required.');
+    }
+
+    await db.query(
+      'INSERT INTO feedback (student_name, email, message, rating) VALUES (?, ?, ?, ?)',
+      [student_name, email, message, rating]
+    );
+
+    res.redirect('/feedback?status=success');
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error submitting feedback');
+  }
 };
 // controllers/courseController.js
 

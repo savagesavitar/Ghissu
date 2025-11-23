@@ -21,6 +21,11 @@ router.get('/feedback', courseController.getFeedbackPage);
 router.get('/queries', courseController.getQueriesPage);
 router.post('/queries', courseController.handleQuerySubmission);
 
-module.exports = router;
+
+// ... existing routes ...
+
+// Feedback Routes
+router.get('/feedback', courseController.getFeedbackPage);
+router.post('/feedback', courseController.handleFeedback);
 
 module.exports = router;

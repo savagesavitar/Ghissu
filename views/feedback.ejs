@@ -1,24 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Feedback</title>
+  <meta charset="UTF-8" />
+  <title>Feedback - Ghissu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    /* Your navigation CSS from index.ejs could go into a shared layout file later */
-    .navbar .nav-item .nav-link.active {
-      font-weight: bold;
-      color: #0d6efd !important;
-      border-bottom: 2px solid #0d6efd;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
+<body class="bg-light">
 
-  <div class="container my-5">
-    <h1>Submit Feedback</h1>
-    <p>Let us know what you think!</p>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">Ghissu</a>
+      <a href="/" class="btn btn-outline-secondary btn-sm">Back to Home</a>
     </div>
+  </nav>
+
+  <div class="container mb-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        
+        <% if (locals.successMessage) { %>
+            <div class="alert alert-success shadow-sm border-0 mb-4 text-center">
+                <i class="fas fa-heart me-2"></i> <%= successMessage %>
+            </div>
+        <% } %>
+
+        <div class="custom-card p-5">
+            <div class="text-center mb-4">
+                <div class="text-primary mb-3"><i class="fas fa-comments fa-3x"></i></div>
+                <h3 class="fw-bold">We Value Your Feedback</h3>
+                <p class="text-muted">Help us improve Ghissu for everyone.</p>
+            </div>
+
+            <form action="/feedback" method="POST">
+                
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Your Name (Optional)</label>
+                    <input type="text" class="form-control" name="student_name" placeholder="e.g. Alex">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Email (Optional)</label>
+                    <input type="email" class="form-control" name="email" placeholder="name@example.com">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Rating</label>
+                    <select class="form-select" name="rating">
+                        <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
+                        <option value="4">⭐⭐⭐⭐ - Good</option>
+                        <option value="3">⭐⭐⭐ - Okay</option>
+                        <option value="2">⭐⭐ - Needs Improvement</option>
+                        <option value="1">⭐ - Bad</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted">Message / Suggestion</label>
+                    <textarea class="form-control" name="message" rows="5" placeholder="Tell us what you think..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 shadow-sm">
+                    Send Feedback <i class="fas fa-paper-plane ms-2"></i>
+                </button>
+
+            </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
